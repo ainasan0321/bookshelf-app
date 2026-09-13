@@ -122,11 +122,15 @@ erDiagram
     users ||--o{ books : "registers"
     users ||--o{ reviews : "posts"
     users ||--o{ reading_plans : "sets"
+    users ||--o{ favorites : "likes"
     users ||--o{ review_likes : "likes"
 
     books ||--o{ reading_plans : "has"
     books ||--o{ reviews : "has"
-    books }o--o{ genres : "book_genre"
+    books ||--o{ favorites : "favorited_by"
+    books ||--o{ book_genre : "has"
+
+    genres || --o{ book_genre : "has"
 
     reviews ||--o{ review_likes : "liked_by"
 

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             GenreSeeder::class,
             BookSeeder::class,
             FavoriteSeeder::class,
+            ReadingPlanSeeder::class,
             ReviewSeeder::class,
             ReviewLikeSeeder::class,
         ]);

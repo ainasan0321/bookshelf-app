@@ -43,14 +43,14 @@ class ReadingPlanAlertCommand extends Command
             if ($targetDate->copy()->subDay(3)->equalTo($today)) {
                 $user->notify(new CustomNotification([
                     'title' => '読書リマインダー(あと3日)',
-                    'body' => '「{$bookTitle}」の読書期日まであと3日になりました。読み進んでいますか？',
+                    'body' => "「{$bookTitle}」の読書期日まであと3日になりました。読み進んでいますか？",
                     'timing' => 'three_days_before',
                 ]));
 
             } elseif ($targetDate->equalTo($today)) {
                 $user->notify(new CustomNotification([
                     'title' => '本日が読書期限です！',
-                    'body' => '今日が「{$bookTitle}」の読書期限の日だよ！',
+                    'body' => "今日が「{$bookTitle}」の読書期限の日だよ！",
                     'timing' => 'on_due_date',
                 ]));
 
@@ -61,7 +61,7 @@ class ReadingPlanAlertCommand extends Command
 
                 $user->notify(new CustomNotification([
                     'title' => '読書期限超過のお知らせ',
-                    'body' => '「{$bookTitle}」の読書期限が切れました。',
+                    'body' => "「{$bookTitle}」の読書期限が切れました。",
                     'timing' => 'three_days_after',
                 ]));
             }

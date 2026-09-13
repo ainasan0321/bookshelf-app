@@ -12,7 +12,6 @@ class RankingTest extends TestCase
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     public function test_認証ユーザーはランキングを表示できる(): void
@@ -26,7 +25,7 @@ class RankingTest extends TestCase
         $book = $user->books()->create([
             'title' => 'ランキングの本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $response = $this->actingAs($user)->get(route('ranking.index'));
@@ -52,7 +51,7 @@ class RankingTest extends TestCase
             'user_id' => $user->id,
             'book_id' => $bookHighRating->id,
             'rating' => 5,
-            'comment' => '最高'
+            'comment' => '最高',
         ]);
 
         $bookLowRating = $user->books()->create([
@@ -60,29 +59,29 @@ class RankingTest extends TestCase
             'author' => '著者',
             'isbn' => '9784000000002',
         ]);
-        
+
         Review::create([
             'user_id' => $user->id,
             'book_id' => $bookLowRating->id,
             'rating' => 3,
-            'comment' => '普通でした'
+            'comment' => '普通でした',
         ]);
 
         for ($i = 3; $i <= 11; $i++) {
 
-            $isbnCode = "9784000000" . sprintf('%03d', $i);
+            $isbnCode = '9784000000'.sprintf('%03d', $i);
 
             $otherBook = $user->books()->create([
-                'title'  => "その他の本{$i}",
+                'title' => "その他の本{$i}",
                 'author' => '著者',
-                'isbn'   => $isbnCode
+                'isbn' => $isbnCode,
             ]);
 
             Review::create([
                 'user_id' => $user->id,
                 'book_id' => $otherBook->id,
-                'rating'  => 4,
-                'comment' => 'レビュー付き'
+                'rating' => 4,
+                'comment' => 'レビュー付き',
             ]);
         }
 

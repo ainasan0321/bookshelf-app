@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Book;
 use Illuminate\View\View;
-
 
 class FavoriteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() :View
+    public function index(): View
     {
         $books = auth()->user()->favoriteBooks()->paginate(10);
+
         return view('favorites.index', compact('books'));
     }
 

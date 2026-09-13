@@ -13,7 +13,6 @@ class BookApiTest extends TestCase
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     public function test_一覧は_data_と_meta_の構造を返し、ジャンルや平均評価も含める(): void
@@ -30,7 +29,7 @@ class BookApiTest extends TestCase
             'user_id' => $user->id,
             'title' => 'apiの本',
             'author' => 'apiの著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $response = $this->getJson('/api/v1/books');
@@ -39,7 +38,7 @@ class BookApiTest extends TestCase
 
         $response->assertJsonStructure([
             'data' => [
-                '*' => ['id', 'title', 'author', 'genres', 'average_rating', 'reviews_count'
+                '*' => ['id', 'title', 'author', 'genres', 'average_rating', 'reviews_count',
                 ],
             ],
             'meta' => ['current_page', 'last_page', 'per_page', 'total'],
@@ -60,14 +59,14 @@ class BookApiTest extends TestCase
             'user_id' => $user->id,
             'title' => 'laravelの世界',
             'author' => 'laravelの著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         Book::create([
             'user_id' => $user->id,
             'title' => '路線図',
             'author' => '鉄道会社',
-            'isbn' => '9784000000002'
+            'isbn' => '9784000000002',
         ]);
 
         $response = $this->getJson('/api/v1/books?keyword=Laravel');
@@ -91,7 +90,7 @@ class BookApiTest extends TestCase
         $bookNovel = Book::create(['user_id' => $user->id, 'title' => '小説の本', 'author' => '著者', 'isbn' => '9784000000001']);
         $bookHistory = Book::create(['user_id' => $user->id, 'title' => '歴史の本', 'author' => '著者', 'isbn' => '9784000000002']);
 
-        //ジャンルを本に紐付ける。
+        // ジャンルを本に紐付ける。
         $bookNovel->genres()->sync([$genreNovel->id]);
         $bookHistory->genres()->sync([$genreHistory->id]);
 

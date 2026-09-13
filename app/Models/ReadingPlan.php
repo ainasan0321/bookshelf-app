@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\ReadingPlanStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Enums\ReadingPlanStatus;
-
 
 class ReadingPlan extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'user_id',
         'book_id',
@@ -26,12 +25,12 @@ class ReadingPlan extends Model
         'status' => ReadingPlanStatus::class,
     ];
 
-    public function user(): belongsTo
+    public function user(): BelongsTo
     {
         return $this->BelongsTo(User::class);
     }
 
-    public function book():  belongsTo
+    public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
     }

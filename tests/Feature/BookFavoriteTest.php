@@ -11,7 +11,6 @@ class BookFavoriteTest extends TestCase
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     public function test_ログインユーザーは書籍のお気に入り状態をトグルできる(): void
@@ -25,7 +24,7 @@ class BookFavoriteTest extends TestCase
         $book = $user->books()->create([
             'title' => 'テスト用の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $responseAdded = $this->actingAs($user)->post(route('favorites.toggle', $book), []);

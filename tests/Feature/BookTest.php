@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BookTest extends TestCase
@@ -17,7 +16,6 @@ class BookTest extends TestCase
      */
     use RefreshDatabase;
 
-
     public function test_未ログインユーザーは書籍一覧にアクセスできる(): void
     {
         $this->get(route('books.index'))->assertOk();
@@ -25,20 +23,20 @@ class BookTest extends TestCase
 
     public function test_認証ユーザーは書籍一覧を表示できる(): void
     {
-        //準備
+        // 準備
         $user = User::create([
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
             'password' => bcrypt('password'),
         ]);
 
-        //検証
+        // 検証
         $this->actingAs($user)->get(route('books.index'))->assertOk();
     }
 
     public function test_認証ユーザーは書籍をを作成し、ジャンルをつけられる(): void
     {
-        //準備
+        // 準備
         $user = User::create([
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
@@ -63,7 +61,7 @@ class BookTest extends TestCase
 
         $response->assertRedirect(route('books.show', $book));
 
-        //検証
+        // 検証
         $this->assertDatabaseHas('books', [
             'id' => $book->id,
             'user_id' => $user->id,
@@ -78,7 +76,7 @@ class BookTest extends TestCase
 
     public function test_タイトルがないと書籍を作成できない(): void
     {
-        //準備
+        // 準備
         $user = User::create([
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
@@ -88,20 +86,20 @@ class BookTest extends TestCase
         $genre = Genre::create(['name' => '技術書']);
 
         $this->actingAs($user)->post(route('books.store'),
-        [
-            'title' => '',
-            'author' => 'テスト著者名',
-            'genres' => [$genre->id],
+            [
+                'title' => '',
+                'author' => 'テスト著者名',
+                'genres' => [$genre->id],
 
-        ])->assertSessionHasErrors('title');
+            ])->assertSessionHasErrors('title');
 
-        //検証
+        // 検証
         $this->assertDatabaseCount('books', 0);
     }
 
     public function test_書籍詳細を表示できる(): void
     {
-        //準備
+        // 準備
         $user = User::create([
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
@@ -111,10 +109,10 @@ class BookTest extends TestCase
         $book = Book::create([
             'user_id' => $user->id,
             'title' => '詳細テスト',
-            'author' => 'テスト著者'
+            'author' => 'テスト著者',
         ]);
 
-        //検証
+        // 検証
         $this->actingAs($user)
             ->get(route('books.show', $book))
             ->assertOk()
@@ -123,7 +121,7 @@ class BookTest extends TestCase
 
     public function test_所有者は自分の書籍を更新できる(): void
     {
-        //準備
+        // 準備
         $user = User::create([
             'name' => 'テストユーザー',
             'email' => 'test@example.com',
@@ -184,13 +182,13 @@ class BookTest extends TestCase
         $bookPhp = $user->books()->create([
             'title' => 'はじめてのPHP超入門',
             'author' => '著者A',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $bookRuby = $user->books()->create([
             'title' => 'プログラミング',
             'author' => '著者B',
-            'isbn' => '9784000000002'
+            'isbn' => '9784000000002',
         ]);
 
         $responseSearch = $this->actingAs($user)->get(route('books.index', ['keyword' => 'PHP']));
@@ -214,7 +212,7 @@ class BookTest extends TestCase
         $bookTech = $user->books()->create([
             'title' => 'リーダブルコード',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $bookTech->genres()->attach($genreTech->id);
@@ -222,7 +220,7 @@ class BookTest extends TestCase
         $bookNovel = $user->books()->create([
             'title' => 'こころ',
             'author' => '夏目漱石',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $bookNovel->genres()->attach($genreNovel->id);
@@ -251,7 +249,7 @@ class BookTest extends TestCase
         $bookPhp = $user->books()->create([
             'title' => 'laravel',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $bookPhp->genres()->attach($genreTech->id);
@@ -259,7 +257,7 @@ class BookTest extends TestCase
         $bookNovel = $user->books()->create([
             'title' => 'こころ',
             'author' => '夏目漱石',
-            'isbn' => '9784000000002'
+            'isbn' => '9784000000002',
         ]);
 
         $bookNovel->genres()->attach($genreNovel->id);
@@ -290,7 +288,7 @@ class BookTest extends TestCase
         $book = $user->books()->create([
             'title' => 'テストタイトル',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $response = $this->actingAs($user)->get(route('books.index', ['keyword' => '世界']));
@@ -312,14 +310,14 @@ class BookTest extends TestCase
             'title' => '新しい本',
             'author' => '新しい著者',
             'isbn' => '9784000000001',
-            'created_at' => '2026-09-09 00:00:00'
+            'created_at' => '2026-09-09 00:00:00',
         ]);
 
         $oldBook = $user->books()->create([
             'title' => '古い本',
             'author' => '古い著者',
             'isbn' => '9784000000002',
-            'created_at' => '2026-09-08 00:00:00'
+            'created_at' => '2026-09-08 00:00:00',
         ]);
 
         $responseNew = $this->actingAs($user)->get(route('books.index', ['sort' => 'latest']));
@@ -392,14 +390,14 @@ class BookTest extends TestCase
             'user_id' => $user->id,
             'book_id' => $highRatingBook->id,
             'rating' => 5,
-            'comment' => '最高'
+            'comment' => '最高',
         ]);
 
         Review::create([
             'user_id' => $user->id,
             'book_id' => $lowRatingBook->id,
             'rating' => 2,
-            'comment' => 'あんまりだった'
+            'comment' => 'あんまりだった',
         ]);
 
         $response = $this->actingAs($user)->get(route('books.index', ['sort' => 'rating']));
@@ -411,4 +409,3 @@ class BookTest extends TestCase
         $this->assertEquals($nothingRatingBook->id, $bookRating->last()->id);
     }
 }
-

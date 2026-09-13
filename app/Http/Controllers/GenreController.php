@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\UpdateGenreRequest;
-use App\Models\Book;
 use App\Models\Genre;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -46,7 +45,7 @@ class GenreController extends Controller
     {
         $books = $genre->books()->paginate(10);
 
-        return view('genres.show', compact('genre','books'));
+        return view('genres.show', compact('genre', 'books'));
     }
 
     /**

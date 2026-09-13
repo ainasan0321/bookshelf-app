@@ -2,13 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\ReadingPlan;
 use App\Enums\ReadingPlanStatus;
+use App\Models\ReadingPlan;
 use App\Notifications\CustomNotification;
 use Carbon\Carbon;
-
-
+use Illuminate\Console\Command;
 
 class ReadingPlanAlertCommand extends Command
 {
@@ -49,14 +47,14 @@ class ReadingPlanAlertCommand extends Command
                     'timing' => 'three_days_before',
                 ]));
 
-            }elseif ($targetDate->equalTo($today)) {
+            } elseif ($targetDate->equalTo($today)) {
                 $user->notify(new CustomNotification([
                     'title' => '本日が読書期限です！',
                     'body' => '今日が「{$bookTitle}」の読書期限の日だよ！',
                     'timing' => 'on_due_date',
                 ]));
 
-            }elseif ($targetDate->lessThan($today)) {
+            } elseif ($targetDate->lessThan($today)) {
                 $plan->update([
                     'status' => ReadingPlanStatus::Expired->value,
                 ]);

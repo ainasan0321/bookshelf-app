@@ -2,10 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Enums\ReadingPlanStatus;
-use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\Rule;
 
 class StoreReadingPlanRequest extends FormRequest
 {
@@ -20,12 +18,12 @@ class StoreReadingPlanRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'book_id' => ['required','exists:books,id'],
+            'book_id' => ['required', 'exists:books,id'],
             'target_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:today'],
         ];
     }

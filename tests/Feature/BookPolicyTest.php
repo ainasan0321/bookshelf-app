@@ -2,9 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Book;
-use App\Models\User;
 use App\Models\Genre;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -32,7 +31,7 @@ class BookPolicyTest extends TestCase
         $book = $testUser->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $this->assertTrue($testUser->can('update', $book));
@@ -58,13 +57,13 @@ class BookPolicyTest extends TestCase
         $book = $testUser->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $genre = Genre::create(['name' => '歴史']);
 
         $response = $this->actingAs($testOther)->putJson("/api/v1/books/{$book->id}", [
-            'title'  => '更新タイトル',
+            'title' => '更新タイトル',
             'author' => '更新著者',
             'genres' => [$genre->id],
         ]);
@@ -89,7 +88,7 @@ class BookPolicyTest extends TestCase
         $book = $testUser->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $response = $this->actingAs($testOther)->get(route('books.edit', $book))->assertForbidden();
@@ -112,7 +111,7 @@ class BookPolicyTest extends TestCase
         $book = $testUser->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $response = $this->actingAs($testOther)->deleteJson("/api/v1/books/{$book->id}");
@@ -133,7 +132,7 @@ class BookPolicyTest extends TestCase
         $book = $user->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $responsePostGuest = $this->postJson('/api/v1/books', ['title' => 'ゲスト登録']);
@@ -166,19 +165,19 @@ class BookPolicyTest extends TestCase
         $user = User::create([
             'name' => '所有者',
             'email' => 'user@example.com',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $other = User::create([
             'name' => '他人',
             'email' => 'other@example.com',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $book = $user->books()->create([
             'title' => '所有者の本',
             'author' => '著者',
-            'isbn' => '9784000000003'
+            'isbn' => '9784000000003',
         ]);
 
         $response = $this->actingAs($other)->getJson('/api/v1/books');

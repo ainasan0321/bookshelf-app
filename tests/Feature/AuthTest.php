@@ -83,7 +83,7 @@ class AuthTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-        ->post('/logout');
+            ->post('/logout');
 
         $response->assertRedirect('/');
 

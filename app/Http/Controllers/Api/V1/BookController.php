@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Book;
-use App\Http\Resources\Api\V1\BookResource;
 use App\Http\Requests\Api\V1\StoreBookRequest;
 use App\Http\Requests\Api\V1\UpdateBookRequest;
+use App\Http\Resources\Api\V1\BookResource;
+use App\Models\Book;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
 
 class BookController extends Controller
 {
@@ -22,7 +20,7 @@ class BookController extends Controller
             ->withCount('reviews')
             ->withAvg('reviews', 'rating');
 
-        if($request->filled('keyword')) {
+        if ($request->filled('keyword')) {
             $keyword = $request->input('keyword');
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
@@ -30,7 +28,7 @@ class BookController extends Controller
             });
         }
 
-        if($request->filled('genre')) {
+        if ($request->filled('genre')) {
             $genreId = $request->input('genre');
             $query->whereHas('genres', function ($q) use ($genreId) {
                 $q->where('genres.id', $genreId);
@@ -117,5 +115,4 @@ class BookController extends Controller
 
         return response()->json(null, 204);
     }
-
 }

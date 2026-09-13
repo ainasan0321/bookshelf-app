@@ -1,66 +1,206 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BookShelf 書籍レビューアプリ
+書籍、ジャンルの登録、管理から、読書のリアルなレビュー、読書計画の進捗管理、個人の読書統計を可視化し、ランキング・公開 API を備えた Laravel アプリケーションです。
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 開発者
+- 中村蒼奈
 
-## About Laravel
+## 動作環境
+- Docker / Docker Compose（Laravel Sail）
+- PHP 8.5.8 / Laravel 10.50.2 / MySQL 8.4.10
+※ Windows をお使いの場合は WSL2 の利用を推奨します。Apple Silicon の Mac でプラットフォームエラーが出る場合は、`compose.yaml` の該当サービスに `platform: linux/amd64` を追記してください。
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 環境構築手順
+1. リポジトリのクローンとディレクトリ移動
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+git clone git@github.com:ainasan0321/bookshelf-app.git
+cd bookshelf-app
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. `.env` を用意する
 
-## Learning Laravel
+```bash
+cp .env.example .env
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. 依存パッケージをインストールする（初回は `vendor` がないため Docker 経由で実行）
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "\$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php82-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. Dockerコンテナの起動
 
-## Laravel Sponsors
+```bash
+./vendor/bin/sail up -d
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. アプリケーションキーの生成
 
-### Premium Partners
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+6. マイグレーションと初期データの投入
 
-## Contributing
+```bash
+./vendor/bin/sail artisan migrate:fresh --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+7. フロントエンドをビルド
 
-## Code of Conduct
+```bash
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+8. ブラウザで http://localhost にアクセスする
 
-## Security Vulnerabilities
+## 開発環境 URL
+- アプリケーション: http://localhost
+- phpMyAdmin: http://localhost:8080
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## テストの実行
+テストカバレッジ82.1%を達成しています。
 
-## License
+```bash
+./vendor/bin/sail artisan test
+./vendor/bin/sail artisan test --coverage --min=60
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### バッチ処理の即時検証コマンド（手動実行）
+期限3日前・当日のリマインダー通知、および期限切れ計画の自動失効バッチを即時検証したい場合は、以下のコマンドを実行します。
+```bash
+./vendor/bin/sail artisan app:reading-plan-alert-command
+```
+
+## 公開 API エンドポイント
+| メソッド | パス | 概要 | 認証 (Sanctum) |
+|----------|------|------|------------|
+| GET | `/api/v1/books` | 書籍一覧（検索・フィルタ・ソート・ページネーション） | 不要 |
+| GET | `/api/v1/books/{id}` | 書籍詳細 | 不要 |
+| POST | `/api/v1/books` | 書籍登録 | 必須 |
+| PUT | `/api/v1/books/{id}` | 書籍更新 | 必須 |
+| DELETE | `/api/v1/books/{id}` | 書籍削除 | 必須 |
+
+## 機能一覧
+
+### 基本機能
+- ユーザー認証
+- 書籍のCRUD
+- ジャンルのCRUD
+- レビューのCRUD
+- お気に入り機能
+- レビューへのいいね機能
+- ランキング機能
+- 公開API
+
+### 応用機能
+- 高度な検索・絞り込み・ソート
+- マイ読書レポート
+- 読書計画
+- リマインダー通知
+
+## 使用技術
+- PHP 8.5.8 / Laravel 10.50.2
+- MySQL 8.4.10
+- Docker / Laravel Sail
+- Laravel Fortify
+- Tailwind CSS / Vite
+- Laravel Sanctum
+- PHPUnit
+
+## ER 図
+
+```mermaid
+erDiagram
+    users ||--o{ books : "registers"
+    users ||--o{ reviews : "posts"
+    users ||--o{ reading_plans : "sets"
+    users ||--o{ review_likes : "likes"
+
+    books ||--o{ reading_plans : "has"
+    books ||--o{ reviews : "has"
+    books }o--o{ genres : "book_genre"
+
+    reviews ||--o{ review_likes : "liked_by"
+
+    users {
+        bigint id PK
+        string name
+        string email
+        string password
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    books {
+        bigint id PK
+        bigint user_id FK
+        string title
+        string author
+        string isbn
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    genres {
+        bigint id PK
+        string name
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    book_genre {
+        bigint book_id PK, FK
+        bigint genre_id PK, FK
+    }
+
+    reviews {
+        bigint id PK
+        bigint user_id FK
+        bigint book_id FK
+        int rating
+        text comment
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    review_likes {
+        bigint id PK
+        bigint user_id FK
+        bigint review_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    reading_plans {
+        bigint id PK
+        bigint user_id FK
+        bigint book_id FK
+        date target_date
+        date completed_at
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    notifications {
+        uuid id PK
+        string type
+        string notifiable_type
+        bigint notifiable_id
+        text data
+        timestamp read_at
+        timestamp created_at
+        timestamp updated_at
+    }
+```
+
+## 未実装
+ISBN検索

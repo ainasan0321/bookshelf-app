@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Book;
-use App\Models\User;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ReviewSeeder extends Seeder
@@ -18,7 +17,7 @@ class ReviewSeeder extends Seeder
         $bookIds = Book::pluck('id')->toArray();
         $userIds = User::pluck('id')->toArray();
 
-        $reviewCounts = [2,4,3,2,3,4,3,4,2,3,2];
+        $reviewCounts = [2, 4, 3, 2, 3, 4, 3, 4, 2, 3, 2];
 
         foreach ($bookIds as $key => $bookId) {
             $reviewCount = $reviewCounts[$key];

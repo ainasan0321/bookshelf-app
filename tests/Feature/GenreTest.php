@@ -12,7 +12,6 @@ class GenreTest extends TestCase
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     public function test_認証ユーザーはジャンル一覧画面を表示できる(): void
@@ -66,7 +65,7 @@ class GenreTest extends TestCase
 
         $update->assertRedirect(route('genres.index'));
 
-        $this->assertDatabaseHas('genres',[
+        $this->assertDatabaseHas('genres', [
             'id' => $genre->id,
             'name' => '更新後のジャンル名',
         ]);

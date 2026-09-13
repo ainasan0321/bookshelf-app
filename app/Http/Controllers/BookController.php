@@ -4,28 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
-use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Genre;
-use App\Models\Favorite;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
-
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-
-    public function index(Request $request) :View
+    public function index(Request $request): View
     {
         $query = Book::query();
 
-        if($request->filled('keyword')) {
+        if ($request->filled('keyword')) {
             $keyword = $request->input('keyword');
             $query->where(function ($q) use ($keyword) {
                 $q->where('title', 'like', "%{$keyword}%")
@@ -33,7 +28,7 @@ class BookController extends Controller
             });
         }
 
-        if($request->filled('genre')) {
+        if ($request->filled('genre')) {
             $genreId = $request->input('genre');
             $query->whereHas('genres', function ($q) use ($genreId) {
                 $q->where('genres.id', $genreId);
@@ -42,16 +37,16 @@ class BookController extends Controller
 
         $sort = $request->input('sort', 'latest');
 
-        if($sort === 'oldest') {
+        if ($sort === 'oldest') {
             $query->orderBy('created_at', 'asc');
 
-        }elseif($sort === 'title') {
+        } elseif ($sort === 'title') {
             $query->orderBy('title', 'asc');
 
-        }elseif($sort === 'rating') {
+        } elseif ($sort === 'rating') {
             $query->withAvg('reviews', 'rating')
                 ->orderByRaw('ISNULL(reviews_avg_rating) ASC')
-                ->orderBy('reviews_avg_rating','desc');
+                ->orderBy('reviews_avg_rating', 'desc');
         }
 
         $books = $query->paginate(10)->withQueryString();
@@ -59,12 +54,14 @@ class BookController extends Controller
 
         return view('books.index', compact('books', 'genres'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         $genres = Genre::all();
+
         return view('books.create', compact('genres'));
     }
 
@@ -79,7 +76,7 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBookRequest $request) :RedirectResponse
+    public function store(StoreBookRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -97,13 +94,13 @@ class BookController extends Controller
         return redirect()->route('books.show', $book)->with('success', '書籍を登録しました。');
     }
 
-    public function edit(Book $book) :view
+    public function edit(Book $book): View
     {
         $this->authorize('update', $book);
 
         if ($book->published_date) {
             session()->flash('_old_input', [
-            'published_date' => $book->published_date->format('Y-m-d')
+                'published_date' => $book->published_date->format('Y-m-d'),
             ]);
         }
 
@@ -149,8 +146,8 @@ class BookController extends Controller
 
     public function search($isbn): JsonResponse
     {
-        
-        $fullUrl = "https://googleapis.com" . $isbn;
+
+        $fullUrl = 'https://googleapis.com'.$isbn;
 
         $rawResponse = @file_get_contents($fullUrl);
 
@@ -160,18 +157,18 @@ class BookController extends Controller
 
         $bookData = json_decode($rawResponse, true);
 
-        if (($bookData['totalItems'] ?? 0) === 0 || !isset($bookData['items'])) {
+        if (($bookData['totalItems'] ?? 0) === 0 || ! isset($bookData['items'])) {
             return response()->json(['error' => '該当する書籍情報が見つかりませんでした。'], 404);
         }
 
         $volumeInfo = $bookData['items'][0]['volumeInfo'];
 
         return response()->json([
-            'title'          => $volumeInfo['title'] ?? 'タイトル不明',
-            'author'         => isset($volumeInfo['authors']) ? implode(', ', $volumeInfo['authors']) : '著者不明',
-            'description'    => $volumeInfo['description'] ?? '',
+            'title' => $volumeInfo['title'] ?? 'タイトル不明',
+            'author' => isset($volumeInfo['authors']) ? implode(', ', $volumeInfo['authors']) : '著者不明',
+            'description' => $volumeInfo['description'] ?? '',
             'published_date' => $volumeInfo['publishedDate'] ?? '',
-            'image_url'      => $volumeInfo['imageLinks']['thumbnail'] ?? '',
+            'image_url' => $volumeInfo['imageLinks']['thumbnail'] ?? '',
         ]);
     }
 }

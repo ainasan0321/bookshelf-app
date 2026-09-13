@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class NotificationController extends Controller
 {
-    public function index(Request $request) :view
+    public function index(Request $request): View
     {
         $notifications = auth()->user()->notifications()->paginate(10);
 
@@ -17,10 +17,10 @@ class NotificationController extends Controller
 
     public function markAsRead($id): RedirectResponse
     {
-         $notification = auth()->user()->notifications()->findOrFail($id);
+        $notification = auth()->user()->notifications()->findOrFail($id);
 
-         $notification->markAsRead();
+        $notification->markAsRead();
 
-         return redirect()->back()->with('success', '通知を既読にしました。');
+        return redirect()->back()->with('success', '通知を既読にしました。');
     }
 }

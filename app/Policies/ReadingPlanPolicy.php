@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\ReadingPlan;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ReadingPlanPolicy
 {
@@ -20,5 +19,4 @@ class ReadingPlanPolicy
     {
         return $user->id === $readingPlan->user_id;
     }
-
 }

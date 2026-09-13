@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ReadingPlanStatus;
 use App\Models\Book;
 use App\Models\ReadingPlan;
 use App\Models\User;
-use App\Enums\ReadingPlanStatus;
+use App\Notifications\CustomNotification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class ReadingPlanTest extends TestCase
@@ -14,7 +17,6 @@ class ReadingPlanTest extends TestCase
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     public function test_ログインユーザーは読書計画の一覧を表示し選択した状態の計画のみに絞り込みができる(): void
@@ -71,7 +73,7 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $response = $this->actingAs($user)->get(route('reading-plans.create'));
@@ -94,7 +96,7 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $store = [
@@ -121,7 +123,7 @@ class ReadingPlanTest extends TestCase
             'password' => bcrypt('password'),
         ]);
 
-        $store =[
+        $store = [
             'book_id' => '',
             'target_date' => '',
         ];
@@ -142,7 +144,7 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $readingPlan = ReadingPlan::create([
@@ -172,7 +174,7 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $readingPlan = ReadingPlan::create([
@@ -184,7 +186,7 @@ class ReadingPlanTest extends TestCase
 
         $update = [
             'target_date' => '2027-01-27',
-            'status'      => ReadingPlanStatus::Reading->value ?? 'reading',
+            'status' => ReadingPlanStatus::Reading->value ?? 'reading',
         ];
 
         $response = $this->actingAs($user)->put(route('reading-plans.update', $readingPlan), $update);
@@ -209,7 +211,7 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $readingPlan = ReadingPlan::create([
@@ -243,7 +245,7 @@ class ReadingPlanTest extends TestCase
         $book = $other->books()->create([
             'title' => '本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $readingPlan = ReadingPlan::create([
@@ -266,7 +268,7 @@ class ReadingPlanTest extends TestCase
 
     public function test_リマインダーバッチは期限の3日前と当日のユーザーに対して正しい通知を送信する(): void
     {
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $user = User::create([
             'name' => 'テストユーザー',
@@ -277,16 +279,16 @@ class ReadingPlanTest extends TestCase
         $bookThreeDays = $user->books()->create([
             'title' => '3日',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
         $bookToday = $user->books()->create([
             'title' => '当日',
             'author' => '著者',
-            'isbn' => '9784000000004'
+            'isbn' => '9784000000004',
         ]);
 
-        $today = \Carbon\Carbon::today();
+        $today = Carbon::today();
 
         ReadingPlan::create([
             'user_id' => $user->id,
@@ -297,12 +299,12 @@ class ReadingPlanTest extends TestCase
 
         $this->artisan('app:reading-plan-alert-command');
 
-        \Illuminate\Support\Facades\Notification::assertSentTo($user, \App\Notifications\CustomNotification::class);
+        Notification::assertSentTo($user, CustomNotification::class);
     }
 
     public function test_自動失効バッチは期限が過ぎた読書計画を自動的に期限切れステータスに更新する(): void
     {
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $user = User::create([
             'name' => 'テストユーザー',
@@ -313,10 +315,10 @@ class ReadingPlanTest extends TestCase
         $book = $user->books()->create([
             'title' => '期限切れの本',
             'author' => '著者',
-            'isbn' => '9784000000001'
+            'isbn' => '9784000000001',
         ]);
 
-        $today = \Carbon\Carbon::today();
+        $today = Carbon::today();
 
         $planExpired = ReadingPlan::create([
             'user_id' => $user->id,

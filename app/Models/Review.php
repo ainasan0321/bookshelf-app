@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 class Review extends Model
 {
     use HasFactory;
@@ -19,17 +18,17 @@ class Review extends Model
         'comment',
     ];
 
-    public function user(): belongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function book(): belongsTo
+    public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
     }
 
-    public function likedByUsers(): belongsToMany
+    public function likedByUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'review_likes');
     }

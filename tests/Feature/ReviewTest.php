@@ -27,7 +27,7 @@ class ReviewTest extends TestCase
             'user_id' => $user->id,
             'title' => 'テストの本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $response = $this->actingAs($user)->post(route('reviews.store', $book), [
@@ -37,11 +37,11 @@ class ReviewTest extends TestCase
 
         $response->assertRedirect(route('books.show', $book));
 
-        $this->assertDatabaseHas('reviews',[
+        $this->assertDatabaseHas('reviews', [
             'book_id' => $book->id,
             'user_id' => $user->id,
             'rating' => 4,
-            'comment' => 'テスト用のコメント'
+            'comment' => 'テスト用のコメント',
         ]);
     }
 
@@ -55,9 +55,9 @@ class ReviewTest extends TestCase
 
         $book = Book::create(['user_id' => $user->id, 'title' => 'テストの本', 'author' => '著者', 'isbn' => '9784000000000']);
 
-        $response = $this->post(route('reviews.store', $book),[
+        $response = $this->post(route('reviews.store', $book), [
             'rating' => 4,
-            'comment' => 'テスト用のコメント'
+            'comment' => 'テスト用のコメント',
         ]);
 
         $response->assertRedirect('/login');
@@ -76,14 +76,14 @@ class ReviewTest extends TestCase
         $book = $user->books()->create([
             'title' => 'テストの本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $review = Review::create([
             'user_id' => $user->id,
             'book_id' => $book->id,
             'rating' => 3,
-            'comment' => '面白いです。'
+            'comment' => '面白いです。',
         ]);
 
         $response = $this->actingAs($user)->get(route('reviews.edit', $review));
@@ -106,18 +106,18 @@ class ReviewTest extends TestCase
             'user_id' => $user->id,
             'title' => 'テストの本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $review = Review::create([
             'user_id' => $user->id,
             'book_id' => $book->id,
             'rating' => 3,
-            'comment' => '面白いです。'
+            'comment' => '面白いです。',
         ]);
 
         $update = [
-            'rating'  => 2,
+            'rating' => 2,
             'comment' => '読み直したら少し微妙でした',
         ];
 
@@ -126,8 +126,8 @@ class ReviewTest extends TestCase
         $response->assertRedirect(route('books.show', $book));
 
         $this->assertDatabaseHas('reviews', [
-            'id'      => $review->id,
-            'rating'  => 2,
+            'id' => $review->id,
+            'rating' => 2,
             'comment' => '読み直したら少し微妙でした',
         ]);
     }
@@ -150,21 +150,21 @@ class ReviewTest extends TestCase
             'user_id' => $user->id,
             'title' => 'テストの本',
             'author' => '著者',
-            'isbn' => '9784000000000'
+            'isbn' => '9784000000000',
         ]);
 
         $review = Review::create([
             'user_id' => $user->id,
             'book_id' => $book->id,
             'rating' => 3,
-            'comment' => '面白いです。'
+            'comment' => '面白いです。',
         ]);
 
         $response = $this->actingAs($other)->get(route('reviews.edit', $review));
 
         $responseUpdate = $this->actingAs($other)->put(route('reviews.update', $review), [
             'rating' => 1,
-            'comment' => '勝手に書き換え'
+            'comment' => '勝手に書き換え',
         ]);
 
         $response->assertStatus(403);

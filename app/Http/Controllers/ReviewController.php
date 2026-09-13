@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Models\Book;
 use App\Models\Review;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 
 class ReviewController extends Controller
@@ -19,7 +17,7 @@ class ReviewController extends Controller
         return view('reviews.edit', compact('review'));
     }
 
-    public function store(StoreReviewRequest $request, Book $book) :RedirectResponse
+    public function store(StoreReviewRequest $request, Book $book): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -35,7 +33,7 @@ class ReviewController extends Controller
         return redirect()->route('books.show', $book)->with('success', 'レビューを投稿しました。');
     }
 
-    public function update(UpdateReviewRequest $request, Review $review) :RedirectResponse
+    public function update(UpdateReviewRequest $request, Review $review): RedirectResponse
     {
         $this->authorize('update', $review);
 
@@ -50,7 +48,7 @@ class ReviewController extends Controller
         return redirect()->route('books.show', $review->book)->with('success', 'レビューを更新しました。');
     }
 
-    public function toggle(Review $review) :RedirectResponse
+    public function toggle(Review $review): RedirectResponse
     {
         $user = auth()->user();
 
@@ -59,7 +57,7 @@ class ReviewController extends Controller
         return back()->with('success', 'いいねを更新しました。');
     }
 
-    public function destroy(Review $review) :RedirectResponse
+    public function destroy(Review $review): RedirectResponse
     {
         $this->authorize('delete', $review);
 

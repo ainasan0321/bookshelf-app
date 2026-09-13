@@ -22,7 +22,7 @@ cd bookshelf-app
 
 ```bash
 cp .env.example .env
-```bash
+```
 .envを開いたら、下記へ修正
 
 ```bash
@@ -32,7 +32,7 @@ DB_PORT=3306
 DB_DATABASE=laravel
 DB_USERNAME=sail
 DB_PASSWORD=password
-```bash
+```
 
 3. 依存パッケージをインストールする（初回は `vendor` がないため Docker 経由で実行）
 

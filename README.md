@@ -122,12 +122,12 @@ erDiagram
     users ||--o{ books : "registers"
     users ||--o{ reviews : "posts"
     users ||--o{ reading_plans : "sets"
-    users ||--o{ favorites : "likes"
+    users ||--o{ favorites : "has"
     users ||--o{ review_likes : "likes"
 
     books ||--o{ reading_plans : "has"
     books ||--o{ reviews : "has"
-    books ||--o{ favorites : "favorited_by"
+    books ||--o{ favorites : "has"
     books ||--o{ book_genre : "has"
 
     genres || --o{ book_genre : "has"
@@ -163,6 +163,11 @@ erDiagram
     book_genre {
         bigint book_id PK, FK
         bigint genre_id PK, FK
+    }
+
+    favorites {
+        bigint user_id PK, FK
+        bigint book_id PK, FK
     }
 
     reviews {

@@ -7,6 +7,7 @@
 ## 動作環境
 - Docker / Docker Compose（Laravel Sail）
 - PHP 8.5.8 / Laravel 10.50.2 / MySQL 8.4.10
+
 ※ Windows をお使いの場合は WSL2 の利用を推奨します。Apple Silicon の Mac でプラットフォームエラーが出る場合は、`compose.yaml` の該当サービスに `platform: linux/amd64` を追記してください。
 
 ## 環境構築手順
@@ -21,8 +22,17 @@ cd bookshelf-app
 
 ```bash
 cp .env.example .env
-```
-※ Docker/Sail環境で使用するDB接続設定が.env.exampleに記載されています。必要に応じて環境に合わせて設定を確認してください。
+```bash
+.envを開いたら、下記へ修正
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```bash
 
 3. 依存パッケージをインストールする（初回は `vendor` がないため Docker 経由で実行）
 

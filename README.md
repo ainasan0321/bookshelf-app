@@ -22,6 +22,7 @@ cd bookshelf-app
 ```bash
 cp .env.example .env
 ```
+※ Docker/Sail環境で使用するDB接続設定が.env.exampleに記載されています。必要に応じて環境に合わせて設定を確認してください。
 
 3. 依存パッケージをインストールする（初回は `vendor` がないため Docker 経由で実行）
 
@@ -130,7 +131,7 @@ erDiagram
     books ||--o{ favorites : "has"
     books ||--o{ book_genre : "has"
 
-    genres || --o{ book_genre : "has"
+    genres ||--o{ book_genre : "has"
 
     reviews ||--o{ review_likes : "liked_by"
 
